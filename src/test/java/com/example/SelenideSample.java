@@ -4,6 +4,8 @@ import static com.codeborne.selenide.Selenide.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
+
 import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
@@ -15,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.WebDriverRunner;
 import com.codeborne.selenide.ex.ElementNotFound;
+import com.example.common.DateTools;
 
 @RunWith(Theories.class)
 public class SelenideSample {
@@ -47,7 +50,10 @@ public class SelenideSample {
 		String method = new Object(){}.getClass().getEnclosingMethod().getName();
 		try {
 			open("http://example.selenium.jp/reserveApp/");
-			$("#reserve_day").val("25");
+			LocalDate nextDay = DateTools.getNextDay($("#reserve_year").val(), $("#reserve_month").val(), $("#reserve_day").val());
+			$("#reserve_year").val(String.valueOf(nextDay.getYear()));
+			$("#reserve_month").val(String.valueOf(nextDay.getMonthValue()));
+			$("#reserve_day").val(String.valueOf(nextDay.getDayOfMonth()));
 			$("#guestname").val("山田　太郎");
 			$("#goto_next").click();
 			$("#commit").click();

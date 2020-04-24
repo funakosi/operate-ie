@@ -3,6 +3,7 @@ package com.example;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -19,6 +20,7 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 
 import com.codeborne.selenide.WebDriverRunner;
+import com.example.common.DateTools;
 
 @RunWith(Parameterized.class)
 public class SeleniumSample {
@@ -57,9 +59,19 @@ public class SeleniumSample {
 	@Test
 	public void 各種ブラウザでテスト() throws InterruptedException {
 		driver.get("http://example.selenium.jp/reserveApp/");
+	    WebElement reserveYear = driver.findElement(By.id("reserve_year"));
+	    WebElement reserveMonth = driver.findElement(By.id("reserve_month"));
 	    WebElement reserveDay = driver.findElement(By.id("reserve_day"));
+	    LocalDate nextDay = DateTools.getNextDay(
+	    		reserveYear.getAttribute("value"),
+	    		reserveMonth.getAttribute("value"),
+	    		reserveDay.getAttribute("value"));
+	    reserveYear.clear();
+	    reserveYear.sendKeys(String.valueOf(nextDay.getYear()));
+	    reserveMonth.clear();
+	    reserveMonth.sendKeys(String.valueOf(nextDay.getMonthValue()));
 	    reserveDay.clear();
-	    reserveDay.sendKeys("25");
+	    reserveDay.sendKeys(String.valueOf(nextDay.getDayOfMonth()));
 	    driver.findElement(By.id("guestname")).sendKeys("山田　太郎");
 	    driver.findElement(By.id("goto_next")).click();
 	    driver.findElement(By.id("commit")).click();;
